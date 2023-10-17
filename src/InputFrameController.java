@@ -22,7 +22,7 @@ import java.io.IOException;
  */
 public class InputFrameController{
 
-    public CheckBox isBotFirst;
+    public CheckBox isPlayerYFirst;
     @FXML
     private TextField player1;
 
@@ -32,7 +32,11 @@ public class InputFrameController{
     @FXML
     private ComboBox<String> numberOfRounds;
 
+    @FXML
+    private ComboBox<String> playerX;
 
+    @FXML
+    private ComboBox<String> playerO;
     /**
      * Initialize the dropdown ComboBox with a list of items that are allowed to be selected.
      * Select the first item in the list as the default value of the dropdown.
@@ -45,6 +49,14 @@ public class InputFrameController{
                 "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28");
         this.numberOfRounds.setItems(numberOfRoundsDropdown);
         this.numberOfRounds.getSelectionModel().select(0);
+        
+        ObservableList<String> playerXdropDown = FXCollections.observableArrayList("","Human", "Minimax","Local-Search","Genetic-Algorithm");
+        this.playerX.setItems(playerXdropDown);
+        this.playerX.getSelectionModel().select(0);
+
+        ObservableList<String> playerYdropDown = FXCollections.observableArrayList("","Human", "Minimax","Local-Search","Genetic-Algorithm");
+        this.playerO.setItems(playerYdropDown);
+        this.playerO.getSelectionModel().select(0);
     }
 
 
@@ -80,7 +92,9 @@ public class InputFrameController{
 
             // Get controller of output frame and pass input including player names and number of rounds chosen.
             OutputFrameController outputFC = loader.getController();
-            outputFC.getInput(this.player1.getText(), this.player2.getText(), this.numberOfRounds.getValue(), this.isBotFirst.isSelected());
+            // System.out.println(this.playerX.getValue());
+            // System.out.println(this.playerO.getValue());
+            outputFC.getInput(this.player1.getText(), this.player2.getText(), this.numberOfRounds.getValue(), this.isPlayerYFirst.isSelected(), this.playerX.getValue(), this.playerO.getValue());
 
             // Open the new frame.
             Stage secondaryStage = new Stage();
@@ -120,6 +134,16 @@ public class InputFrameController{
 
         if (roundNumber.length() == 0) {
             new Alert(Alert.AlertType.ERROR, "Number of rounds dropdown menu is blank.").showAndWait();
+            return false;
+        }
+
+        if (this.playerX.getValue().equals("")){
+            new Alert(Alert.AlertType.ERROR, "Player X dropdown menu is blank.").showAndWait();
+            return false;
+        }
+
+        if (this.playerO.getValue().equals("")){
+            new Alert(Alert.AlertType.ERROR, "Player O dropdown menu is blank.").showAndWait();
             return false;
         }
 

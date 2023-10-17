@@ -49,8 +49,14 @@ public class OutputFrameController {
     private int playerXScore;
     private int playerOScore;
     private int roundsLeft;
-    private boolean isBotFirst;
+    private boolean isPlayerYFirst;
     private Bot bot;
+    private Bot botO;
+    private Bot botX;
+    private String playerXLabel;
+    private String playerOLabel;
+    private boolean isPlayerXBot;
+    private boolean isPlayerOBot;
 
 
     private static final int ROW = 8;
@@ -66,20 +72,41 @@ public class OutputFrameController {
      * @param name1 Name of Player 1 (Player).
      * @param name2 Name of Player 2 (Bot).
      * @param rounds The number of rounds chosen to be played.
-     * @param isBotFirst True if bot is first, false otherwise.
+     * @param isPlayerYFirst True if bot is first, false otherwise.
      *
      */
-    void getInput(String name1, String name2, String rounds, boolean isBotFirst){
+    void getInput(String name1, String name2, String rounds, boolean isPlayerYFirst, String playerX, String playerO){
         this.playerXName.setText(name1);
         this.playerOName.setText(name2);
         this.roundsLeftLabel.setText(rounds);
         this.roundsLeft = Integer.parseInt(rounds);
-        this.isBotFirst = isBotFirst;
+        this.isPlayerYFirst = isPlayerYFirst;
+        // System.out.println(playerX);
+        // System.out.println(playerO);
+        this.playerXLabel = (playerX);
+        this.playerOLabel = (playerO);
 
+        this.playerXTurn = !isPlayerYFirst;
+
+        if(this.playerOLabel!="Human"){
+            this.botO = new Bot();
+            this.isPlayerOBot = true;
+        }else{
+            this.isPlayerOBot = false;
+        }
+        if(this.playerXLabel!="Human"){
+            this.botX = new Bot();
+            this.isPlayerXBot = true;
+        }else{
+            this.isPlayerXBot = false;
+        }
         // Start bot
-        this.bot = new Bot();
-        this.playerXTurn = !isBotFirst;
-        if (this.isBotFirst) {
+        // this.bot = new Bot();
+        if(this.isPlayerXBot && this.playerXTurn){
+            this.moveBot();
+        }
+
+        if (this.isPlayerYFirst && this.isPlayerOBot) {
             this.moveBot();
         }
     }
@@ -187,17 +214,20 @@ public class OutputFrameController {
                 this.updateGameBoard(i, j);
                 this.playerXTurn = false;         // Alternate player's turn.
 
-                if (isBotFirst) {
+                if (isPlayerYFirst) {
                     this.roundsLeft--; // Decrement the number of rounds left after both Player X & Player O have played.
                     this.roundsLeftLabel.setText(String.valueOf(this.roundsLeft));
                 }
 
-                if (isBotFirst && this.roundsLeft == 0) {
+                if (isPlayerYFirst && this.roundsLeft == 0) {
                     this.endOfGame();
                 }
 
                 // Bot's turn
-                this.moveBot();
+                // this.moveBot();
+                if(this.isPlayerOBot){
+                    this.moveBot();
+                }
             }
             else {
                 this.playerXBoxPane.setStyle("-fx-background-color: #90EE90; -fx-border-color: #D3D3D3;");
@@ -208,13 +238,16 @@ public class OutputFrameController {
                 this.updateGameBoard(i, j);
                 this.playerXTurn = true;
 
-                if (!isBotFirst) {
+                if (!isPlayerYFirst) {
                     this.roundsLeft--; // Decrement the number of rounds left after both Player X & Player O have played.
                     this.roundsLeftLabel.setText(String.valueOf(this.roundsLeft));
                 }
 
-                if (!isBotFirst && this.roundsLeft == 0) { // Game has terminated.
+                if (!isPlayerYFirst && this.roundsLeft == 0) { // Game has terminated.
                     this.endOfGame();       // Determine & announce the winner.
+                }
+                if(this.isPlayerXBot){
+                    this.moveBot();
                 }
             }
         }
@@ -353,9 +386,19 @@ public class OutputFrameController {
     }
 
     private void moveBot() {
-        int[] botMove = this.bot.move();
-        int i = botMove[0];
-        int j = botMove[1];
+        int [] botMove;
+        int i,j;
+        if(this.playerXTurn){
+            botMove = this.botX.move(buttons);
+            i = botMove[0];
+            j = botMove[1];
+            System.out.println("Bot X move: " + i + " " + j);
+        }else{
+            botMove = this.botO.move(buttons);
+            i = botMove[0];
+            j = botMove[1];
+            System.out.println("Bot O move: " + i + " " + j);
+        }
 
         if (!this.buttons[i][j].getText().equals("")) {
             new Alert(Alert.AlertType.ERROR, "Bot Invalid Coordinates. Exiting.").showAndWait();
