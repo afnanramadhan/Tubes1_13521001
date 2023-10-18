@@ -14,7 +14,6 @@ public class LocalSearchBot extends Bot {
                     int temp = jumlahPenambahan(i,j,position,playerLabel);
                     if (temp > max){
                         max = temp;
-                        System.out.println("max: "+ max + " i: "+ i + " j: "+ j);
                         posisi[0] = i;
                         posisi[1] = j;
                     }else if(temp==max){
@@ -22,7 +21,6 @@ public class LocalSearchBot extends Bot {
                         int randomNumber = random.nextInt(2);
                         if(randomNumber==1){
                             max = temp;
-                            System.out.println("max: "+ max + " i: "+ i + " j: "+ j);
                             posisi[0] = i;
                             posisi[1] = j;
                         }

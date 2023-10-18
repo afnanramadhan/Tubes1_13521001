@@ -1,25 +1,25 @@
 import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
-
+import java.time.LocalTime;
 import javafx.scene.control.Button;
 
 public class MinimaxBot extends Bot{
-    private int depth = 4;
     private int roundsLeft;
+    Button[][] tempMap = new Button[8][8];
 
     @Override
     public int[] move(Button[][] position, String playerLabel, int roundsLeft)  {
-        // int max = Integer.MIN_VALUE;
         this.roundsLeft = roundsLeft;
         int[] selectedLoc = {-1, -1};
-        Button[][] tempMap = new Button[position.length][position[0].length];
         for(int i = 0 ; i < position.length; i++){
             for(int j = 0 ; j < position[0].length; j++){
                 Button copyMap = new Button();
                 copyMap.setText(position[i][j].getText());
-                tempMap[i][j] = copyMap;
+                this.tempMap[i][j] = copyMap;
             }
         }
-        int[] a = minimax(tempMap, depth, Integer.MAX_VALUE, Integer.MIN_VALUE, playerLabel, true);
+        int depth = 4>this.roundsLeft?this.roundsLeft:4;
+        LocalTime startTime = LocalTime.now();
+        int[] a = minimax(this.tempMap, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, playerLabel, true, startTime);
         selectedLoc[0] = a[1];
         selectedLoc[1] = a[2];
         return selectedLoc;
@@ -50,11 +50,20 @@ public class MinimaxBot extends Bot{
         return eval;
     }
 
-    public int[] minimax(Button[][] maploc, int depth, int alpha, int beta, String playerLabel, boolean isMaximazing){
+    public int[] minimax(Button[][] maploc, int depth, int alpha, int beta, String playerLabel, boolean isMaximazing, LocalTime startTime){
 
-        if(depth == 0 || this.roundsLeft==0) {
+        LocalTime now = LocalTime.now();
+        int sisaWaktu = now.toSecondOfDay()-startTime.toSecondOfDay();
+        System.out.println(sisaWaktu);
+        
+        if(depth == 0 || sisaWaktu >= 5) {
+            if(depth > 0){
+                Bot localBot = new LocalSearchBot();
+                int[] unfinishedEval = localBot.move(this.tempMap, playerLabel, roundsLeft);
+                return new int[] {69, unfinishedEval[0], unfinishedEval[1], 0};
+            }
             int evaluation = minimaxEval(maploc,playerLabel);
-            return new int[] {evaluation, -1, -1};
+            return new int[] {evaluation, -1, -1, 1};
         }
 
         if(isMaximazing) {
@@ -66,23 +75,27 @@ public class MinimaxBot extends Bot{
                 for(int j = 0 ; j < 8; j++){
                     if(maploc[i][j].getText().equals("")){
                         Button[][] newPos = updateVirtualPosition(i, j, maploc, playerLabel);
-                        int[] selection =  minimax(newPos, depth - 1, alpha, beta, playerLabel,!isMaximazing);
+                        int[] selection =  minimax(newPos, depth - 1, alpha, beta, playerLabel,!isMaximazing, startTime);
                         int eval = selection[0];
-
-                        if (eval > maxEval){
-                            bestX = i;
-                            bestY = j;
-                            maxEval = eval;
+                        if(selection[3] == 0){
+                            return new int[] {eval,selection[1], selection[2], 0};
                         }
-
-                        alpha = Math.max(alpha, eval);
-                        if(beta <= alpha) {
-                            break;
+                        else{
+                            if (eval > maxEval){
+                                bestX = i;
+                                bestY = j;
+                                maxEval = eval;
+                            }
+    
+                            alpha = Math.max(alpha, eval);
+                            if(beta <= alpha) {
+                                break;
+                            }
                         }
                     }
                 }
             }
-            return new int[] {maxEval, bestX, bestY};
+            return new int[] {maxEval, bestX, bestY, 1};
         }
         else {
             int minEval = Integer.MAX_VALUE;
@@ -93,23 +106,28 @@ public class MinimaxBot extends Bot{
                 for(int j = 0 ; j < 8; j++){
                     if (maploc[i][j].getText().equals("")) {
                         Button[][] newPos = updateVirtualPosition(i, j, maploc,playerLabel);
-                        int[] selection = minimax(newPos, depth - 1, alpha, beta, playerLabel, !isMaximazing);
+                        int[] selection = minimax(newPos, depth - 1, alpha, beta, playerLabel, !isMaximazing, startTime);
                         int eval = selection[0];
-
-                        if(eval < minEval){
-                            minEval = eval;
-                            bestX = i;
-                            bestY = j;
+                        if(selection[3] == 0){
+                            return new int[] {eval,selection[1], selection[2], 0};
+                        }
+                        else{
+                            if(eval < minEval){
+                                minEval = eval;
+                                bestX = i;
+                                bestY = j;
+                            }
+    
+                            beta = Math.min(beta, eval);
+                            if(beta <= alpha) {
+                                break;
+                            }
                         }
 
-                        beta = Math.min(beta, eval);
-                        if(beta <= alpha) {
-                            break;
-                        }
                     }
                 }
             }
-            return new int[] {minEval, bestX, bestY};
+            return new int[] {minEval, bestX, bestY, 1};
         }
     }
 
