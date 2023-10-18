@@ -12,8 +12,15 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
+import javafx.animation.PauseTransition;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import java.util.Date;
+import javafx.util.Duration;
+import javafx.application.Application;
+import javafx.application.Platform;
+// import javafx.stage.Stage;
 
 /**
  * The OutputFrameController class.  It controls button input from the users when
@@ -359,7 +366,6 @@ public class OutputFrameController {
             this.playerXBoxPane.setStyle("-fx-background-color: ORANGE; -fx-border-color: #D3D3D3;");
             this.playerOBoxPane.setStyle("-fx-background-color: ORANGE; -fx-border-color: #D3D3D3;");
         }
-
         // Disable the game board buttons to prevent from playing further.
         for (int i = 0; i < ROW; i++)
             for (int j = 0; j < COL; j++)
@@ -397,27 +403,36 @@ public class OutputFrameController {
         primaryStage.show();
     }
 
-    private void moveBot() {
-        int [] botMove;
-        int i,j;
-        if(this.playerXTurn){
-            botMove = this.botX.move(buttons);
-            i = botMove[0];
-            j = botMove[1];
-            System.out.println("Bot X move: " + i + " " + j);
-        }else{
-            botMove = this.botO.move(buttons);
-            i = botMove[0];
-            j = botMove[1];
-            System.out.println("Bot O move: " + i + " " + j);
-        }
-
-        if (!this.buttons[i][j].getText().equals("")) {
-            new Alert(Alert.AlertType.ERROR, "Bot Invalid Coordinates. Exiting.").showAndWait();
-            System.exit(1);
+    private void moveBot() {        
+        if(roundsLeft==0){
             return;
         }
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        pause.setOnFinished(event -> {
+            int [] botMove;
+            int i,j;
+            if(this.playerXTurn){
+                botMove = this.botX.move(buttons);
+                i = botMove[0];
+                j = botMove[1];
+                System.out.println("Bot X move: " + i + " " + j);
+            }else{
+                botMove = this.botO.move(buttons);
+                i = botMove[0];
+                j = botMove[1];
+                System.out.println("Bot O move: " + i + " " + j);
+            }
 
-        this.selectedCoordinates(i, j);
+            if (!this.buttons[i][j].getText().equals("")) {
+                new Alert(Alert.AlertType.ERROR, "Bot Invalid Coordinates. Exiting.").showAndWait();
+                System.exit(1);
+                return;
+            }
+            Platform.runLater(() -> {
+                this.selectedCoordinates(i, j);
+            });
+        });
+        pause.play();
+
     }
 }
