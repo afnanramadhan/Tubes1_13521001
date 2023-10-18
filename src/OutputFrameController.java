@@ -412,12 +412,12 @@ public class OutputFrameController {
             int [] botMove;
             int i,j;
             if(this.playerXTurn){
-                botMove = this.botX.move(buttons);
+                botMove = this.botX.move(buttons, "X");
                 i = botMove[0];
                 j = botMove[1];
                 System.out.println("Bot X move: " + i + " " + j);
             }else{
-                botMove = this.botO.move(buttons);
+                botMove = this.botO.move(buttons, "O");
                 i = botMove[0];
                 j = botMove[1];
                 System.out.println("Bot O move: " + i + " " + j);

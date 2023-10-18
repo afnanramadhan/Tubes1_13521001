@@ -46,7 +46,7 @@
             </Label>
             <ComboBox fx:id="playerO" GridPane.rowIndex="4" GridPane.columnIndex="1" maxWidth="Infinity" />
 
-            <Label text="Player X goes first: " GridPane.rowIndex="5" GridPane.columnIndex="0">
+            <Label text="Player O goes first: " GridPane.rowIndex="5" GridPane.columnIndex="0">
                 <font>
                     <Font name="Arial Bold" size="12"/>
                 </font>
