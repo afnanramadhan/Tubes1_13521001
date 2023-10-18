@@ -89,13 +89,25 @@ public class OutputFrameController {
         this.playerXTurn = !isPlayerYFirst;
 
         if(this.playerOLabel!="Human"){
-            this.botO = new Bot();
+            if(playerOLabel=="Local-Search"){
+                this.botO = new LocalSearchBot();
+            }else if(playerOLabel=="Minimax"){
+                this.botO = new MinimaxBot();
+            }else{
+                this.botO = new GeneticAlgorithmBot();
+            }
             this.isPlayerOBot = true;
         }else{
             this.isPlayerOBot = false;
         }
         if(this.playerXLabel!="Human"){
-            this.botX = new Bot();
+            if(playerXLabel=="Local-Search"){
+                this.botX = new LocalSearchBot();
+            }else if(playerXLabel=="Minimax"){
+                this.botX = new MinimaxBot();
+            }else{
+                this.botX = new GeneticAlgorithmBot();
+            }
             this.isPlayerXBot = true;
         }else{
             this.isPlayerXBot = false;
