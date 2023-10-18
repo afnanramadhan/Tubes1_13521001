@@ -5,10 +5,10 @@ import javafx.scene.control.Button;
 public class MinimaxBot extends Bot{
 
     @Override
-    public int[] move(java.awt.Button[][] position, String playerLabel, int roundsLeft)  {
+    public int[] move(Button[][] position, String playerLabel, int roundsLeft)  {
         // int max = Integer.MIN_VALUE;
         int[] selectedLoc = {-1, -1};
-        Button tempMap = new Button[position.length][position[0].length];
+        Button[][] tempMap = new Button[position.length][position[0].length];
         for(int i = 0 ; i < position.length; i++){
             for(int j = 0 ; j < position[0].length; j++){
                 Button copyMap = new Button();
@@ -16,7 +16,7 @@ public class MinimaxBot extends Bot{
                 tempMap[i][j] = copyMap;
             }
         }
-        int[] a = minimax(position, roundsLeft, Integer.MAX_VALUE, Integer.MIN_VALUE);
+        int[] a = minimax(tempMap, roundsLeft, Integer.MAX_VALUE, Integer.MIN_VALUE, playerLabel);
         selectedLoc[0] = a[1];
         selectedLoc[1] = a[2];
         return selectedLoc;
@@ -44,7 +44,7 @@ public class MinimaxBot extends Bot{
             return new int[] {evaluation, -1, -1};
         }
 
-        if(playerLabel = "O") {
+        if(playerLabel == "O") {
             int maxEval = Integer.MIN_VALUE;
             int bestX = -1;
             int bestY = -1;
@@ -52,7 +52,7 @@ public class MinimaxBot extends Bot{
             for(int i = 0; i < 8; i++){
                 for(int j = 0 ; j < 8; j++){
                     if(maploc[i][j].getText().equals("")){
-                        Button[][] newPos = updateVirtualPosition(i, j, maploc, 1);
+                        Button[][] newPos = updateVirtualPosition(i, j, maploc, true);
                         int[] selection =  minimax(newPos, roundsLeft - 1, alpha, beta, "X");
                         int eval = selection[0];
 
@@ -77,7 +77,7 @@ public class MinimaxBot extends Bot{
             for(int i = 0 ; i < 8 ; i++){
                 for(int j = 0 ; j < 8; j++){
                     if (maploc[i][j].getText().equals("")) {
-                        Button[][] newPos = updateVirtualPosition(i, j, maploc,0);
+                        Button[][] newPos = updateVirtualPosition(i, j, maploc,false);
                         int[] selection = minimax(newPos, roundsLeft - 1, alpha, beta, "O");
                         int eval = selection[0];
 

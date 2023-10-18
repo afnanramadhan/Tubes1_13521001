@@ -2,7 +2,7 @@ import javafx.scene.control.Button;
 
 public abstract class Bot {
 
-    public abstract int[] move(Button[][] board, String playerLabel);
+    public abstract int[] move(Button[][] board, String playerLabel, int roundsLeft);
     // public abstract int evaluate();
 
 

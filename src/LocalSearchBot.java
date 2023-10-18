@@ -5,7 +5,7 @@ import javafx.scene.control.Button;
 
 public class LocalSearchBot extends Bot {
     @Override
-    public int[] move(Button[][] position, String playerLabel) {
+    public int[] move(Button[][] position, String playerLabel, int roundsLeft) {
         int max = Integer.MIN_VALUE;
         int[] posisi = new int[2];
         for (int i = 0; i < 8; i++) {
