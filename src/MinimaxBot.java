@@ -1,9 +1,8 @@
 import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
-
+import java.time.LocalTime;
 import javafx.scene.control.Button;
 
 public class MinimaxBot extends Bot{
-    private int depth = 4;
     private int roundsLeft;
 
     @Override
@@ -19,7 +18,8 @@ public class MinimaxBot extends Bot{
                 tempMap[i][j] = copyMap;
             }
         }
-        int[] a = minimax(tempMap, depth, Integer.MAX_VALUE, Integer.MIN_VALUE, playerLabel, true);
+        int depth = 4>this.roundsLeft?this.roundsLeft:4;
+        int[] a = minimax(tempMap, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, playerLabel, true);
         selectedLoc[0] = a[1];
         selectedLoc[1] = a[2];
         return selectedLoc;
@@ -51,8 +51,8 @@ public class MinimaxBot extends Bot{
     }
 
     public int[] minimax(Button[][] maploc, int depth, int alpha, int beta, String playerLabel, boolean isMaximazing){
-
-        if(depth == 0 || this.roundsLeft==0) {
+        
+        if(depth == 0) {
             int evaluation = minimaxEval(maploc,playerLabel);
             return new int[] {evaluation, -1, -1};
         }

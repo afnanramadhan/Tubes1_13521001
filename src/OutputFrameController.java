@@ -13,15 +13,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
 import javafx.animation.PauseTransition;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-import java.util.Date;
-import javafx.util.Duration;
 import javafx.application.Application;
 import javafx.application.Platform;
-// import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.util.Date;
+import javafx.util.Duration;
 /**
  * The OutputFrameController class.  It controls button input from the users when
  * playing the game.
@@ -407,7 +404,7 @@ public class OutputFrameController {
         if(roundsLeft==0){
             return;
         }
-        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        PauseTransition pause = new PauseTransition(Duration.millis(500));
         pause.setOnFinished(event -> {
             int [] botMove;
             int i,j;
